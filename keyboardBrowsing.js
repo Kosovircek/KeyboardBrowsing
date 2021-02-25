@@ -28,7 +28,7 @@ selectionAreaOutlineDiv.style.position = "fixed";
 selectionAreaOutlineDiv.style.zIndex = 99999999;
 selectionAreaOutlineDiv.style.border = "5px dotted blue";
 selectionAreaOutlineDiv.style.boxSizing = "border-box";
-selectionAreaOutlineDiv.style.backgroundImage = "url('http://127.0.0.1/devider.svg')";
+selectionAreaOutlineDiv.style.backgroundImage = "url('http://127.0.0.1/devider.svg')"; // Todo(): host the image on a server
 selectionAreaOutlineDiv.style.backgroundPosition = "center";
 selectionAreaOutlineDiv.style.backgroundSize = "cover";
 document.body.appendChild(selectionAreaOutlineDiv);
@@ -107,7 +107,13 @@ document.onkeydown = (event) => {
         if(evtobj.keyCode == 13){ // Enter
 
             if(selectedElementProps.element != null){
-                selectedElementProps.element.click();
+                if(selectedElementProps.element.tagName = "input"){
+                    selectedElementProps.element.focus();
+                    console.log("focused");
+                }
+                else{
+                    selectedElementProps.element.click();
+                }
             }else{
                 selectionAreaOutlineDiv.style.display = "none";
                 document.elementFromPoint(selectionArea.left+selectionArea.width/2, selectionArea.top+selectionArea.height/2).click();
@@ -154,7 +160,7 @@ document.onkeyup = (event) => {
 
 function getElementsInSelectedArea(area){
     
-    let allClickableElements = document.querySelectorAll('a,button,paper-tab');
+    let allClickableElements = document.querySelectorAll('a,button,paper-tab,input');
  
     let elementsInArea = [];
 
