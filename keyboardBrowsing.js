@@ -1,30 +1,27 @@
 
-
-
-
-
-// on ctrl down
+// on ctrl and > down
 //                                                                <---
     // get elements in selected area (first is the whole screen)     |
     // find the closest to the center                                |
     // mark it as selected                                           |
 //                                                                   |
     // listen for further                                            |
-    // if arrow input                                                |
-    // redefine selected area and  -----------------------------------
+        // if arrow input                                            |
+        // redefine selected area and  -------------------------------
 
-    // if enter
-    // click selected
+        // if enter
+        // click selected
 
 
 let ctrlDown = false;
 let bothDown = false;
-let selectedElementProps = {
+let selectedElementProps = { // Sotres selected element and its orginal background color so you can change it back when it is unselected
     element: null,
     backgroundColor: null
 };
-let selectionArea = {top: 0, left: 0, height: window.innerHeight, width: document.body.clientWidth};
+let selectionArea = {top: 0, left: 0, height: window.innerHeight, width: document.body.clientWidth}; // This are the bounds where on screen we want to search for elements
 
+// Overlay seen when pressing ctrl + >
 let selectionAreaOutlineDiv = document.createElement("div");
 selectionAreaOutlineDiv.style.display = "none";
 selectionAreaOutlineDiv.style.position = "fixed";
@@ -40,92 +37,83 @@ updateSelectionAreaDiv();
 
 document.onkeydown = (event) => {
 
-	var evtobj = window.event? event : e
-	console.log("onkeydown: " + evtobj.keyCode);
+	var evtobj = window.event? event : e    
     
-    
+    // Extention only starts working when both ctrl and > keys are pressed down at the same time (but you can let go of ctrl after that)
     if(evtobj.keyCode == 17){// Ctrl key
         ctrlDown = true;
     }
-    if(evtobj.keyCode == 60){// Grater than key
+    if(evtobj.keyCode == 60){// Grater than key >
         if(ctrlDown){
 
             // Call it only once per press (onkeydown gets constantly called when key is pressed down)
             if(bothDown == false){
 
                 bothDown = true;
-                selectionAreaOutlineDiv.style.display = "block";
 
-                console.log("start");
-
+                // Show selection area overlay
+                selectionAreaOutlineDiv.style.display = "block"; 
                 
-                // On both down
+                // On both down start the extention functionality
                 let elementsInArea = getElementsInSelectedArea(selectionArea);
                 let closest = findClosesToTheCenter(elementsInArea, selectionArea);
                 makrAsSelected(closest);
 
-                console.log("end");
             }
         }
     }
 
+    // Arrow keys are used to shrink selection area (half it in direction of the arrow)
     if(bothDown){
 
-        //window.scrollTo(0, 0);
-
         if(evtobj.keyCode == 37){ // Left
-            console.log("arrow left");
 
             changeSelectionArea("left");
             let elementsInArea = getElementsInSelectedArea(selectionArea);
             let closest = findClosesToTheCenter(elementsInArea, selectionArea);
             makrAsSelected(closest);
 
-            return false; //overwrites default behaviour
+            return false; // Hopped it overwrites defailut key down behaviour, bur it doesnt ....
         }
         if(evtobj.keyCode == 38){ // Up
-            console.log("arrow up");
 
             changeSelectionArea("up");
             let elementsInArea = getElementsInSelectedArea(selectionArea);
             let closest = findClosesToTheCenter(elementsInArea, selectionArea);
             makrAsSelected(closest);
 
-            return false; //overwrites default behaviour
+            return false; 
         }
         if(evtobj.keyCode == 39){ // Right
-            console.log("arrow right");
 
             changeSelectionArea("right");
             let elementsInArea = getElementsInSelectedArea(selectionArea);
             let closest = findClosesToTheCenter(elementsInArea, selectionArea);
             makrAsSelected(closest);
 
-            return false; //overwrites default behaviour
+            return false; 
         }
         if(evtobj.keyCode == 40){ // Down
-            console.log("arrow down");
 
             changeSelectionArea("down");
             let elementsInArea = getElementsInSelectedArea(selectionArea);
             let closest = findClosesToTheCenter(elementsInArea, selectionArea);
             makrAsSelected(closest);
 
-            return false; //overwrites default behaviour
+            return false; 
         }
 
-
+        // If you click enter click on selected element (or click on x,y position of center of selection area on screen if no element is selected)
         if(evtobj.keyCode == 13){ // Enter
-            console.log("enter");
 
             if(selectedElementProps.element != null){
                 selectedElementProps.element.click();
             }else{
+                selectionAreaOutlineDiv.style.display = "none";
                 document.elementFromPoint(selectionArea.left+selectionArea.width/2, selectionArea.top+selectionArea.height/2).click();
-                console.log("clicked at location");
             }
             
-            return false; //overwrites default behaviour
+            return false;
         }
 
     }
@@ -134,6 +122,7 @@ document.onkeydown = (event) => {
 
 }
 
+// Hide selection area overlay and reset all the parameters so it starts fresh when you click ctrl+> again later
 document.onkeyup = (event) => {
 
 	var evtobj = window.event? event : e
@@ -142,7 +131,7 @@ document.onkeyup = (event) => {
         
     }
     if(evtobj.keyCode == 60){
-        //bothDown = false;
+
         ctrlDown = false;
         bothDown = false; // Put it in here because keyboard couldnt handle 3 keys down (but only with arrow down key idk why)
         selectionAreaOutlineDiv.style.display = "none";
@@ -150,9 +139,8 @@ document.onkeyup = (event) => {
         // Reset reviously selected elements bg color
         if(selectedElementProps.element != null){
             selectedElementProps.element.style.backgroundColor = selectedElementProps.backgroundColor;
-            console.log("recolored");
         }
-        //reset selection area
+        //reset selection area end selected element
         selectedElementProps = {
             element: null,
             backgroundColor: null
@@ -166,11 +154,10 @@ document.onkeyup = (event) => {
 
 function getElementsInSelectedArea(area){
     
-    let allClickableElements = document.querySelectorAll('a,button');
+    let allClickableElements = document.querySelectorAll('a,button,paper-tab');
  
     let elementsInArea = [];
 
-    
     // Exclude all elements whos cetner is outside the selection area
     for(let i=0; i < allClickableElements.length; i++){
 
@@ -178,11 +165,12 @@ function getElementsInSelectedArea(area){
 
         let rect = element.getBoundingClientRect();
 
-        let cp = { // CenterPosition
+        let cp = { // CenterPosition of element
             x: rect.x + (rect.width/2),
             y: rect.y + (rect.height/2)
         }
 
+        // If element center is within the selection area add it to elementsInArray array
         if(cp.x > area.left && cp.x < (area.left+area.width) && cp.y > area.top && cp.y < (area.top+area.height)){
             elementsInArea.push(
                 {
@@ -192,12 +180,9 @@ function getElementsInSelectedArea(area){
                 }
             );
         }
-
     }
 
-    console.log("returning elements in the area: " + elementsInArea.length); 
-    return elementsInArea;
-    
+    return elementsInArea;    
 }
 
 function findClosesToTheCenter(elements, area){
@@ -206,8 +191,6 @@ function findClosesToTheCenter(elements, area){
         x: area.left + (area.width/2),
         y: area.top + (area.height/2)
     }
-
-
 
     let closestElement = null;
 
@@ -225,10 +208,7 @@ function findClosesToTheCenter(elements, area){
         }
     }
 
-    console.log("returning closest element: " + closestElement);
-    console.log(closestElement);
     return closestElement;
-
 }
 
 function makrAsSelected(element){
