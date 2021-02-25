@@ -107,7 +107,7 @@ document.onkeydown = (event) => {
         if(evtobj.keyCode == 13){ // Enter
 
             if(selectedElementProps.element != null){
-                if(selectedElementProps.element.tagName = "input"){
+                if(selectedElementProps.element.tagName == "INPUT"){
                     selectedElementProps.element.focus();
                     console.log("focused");
                 }
