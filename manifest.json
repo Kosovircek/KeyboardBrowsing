@@ -1,13 +1,13 @@
 {
 
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "KeyboardBrowsing",
-  "version": "1.0",
+  "version": "2.0",
 
-  "description": "Adds a red border to all webpages matching mozilla.org.",
+  "description": "Allows for keyboard only web browsing",
 
   "icons": {
-    "48": "icons/border-48.png"
+    "48": "icons/keyboard_browsing_icon.png.png"
   },
 
   "content_scripts": [
@@ -16,5 +16,4 @@
       "js": ["keyboardBrowsing.js"]
     }
   ]
-
 }

@@ -12,6 +12,7 @@
         // if enter
         // click selected
 
+console.log("TEST");
 
 let ctrlDown = false;
 let bothDown = false;
@@ -28,7 +29,6 @@ selectionAreaOutlineDiv.style.position = "fixed";
 selectionAreaOutlineDiv.style.zIndex = 99999999;
 selectionAreaOutlineDiv.style.border = "5px dotted blue";
 selectionAreaOutlineDiv.style.boxSizing = "border-box";
-selectionAreaOutlineDiv.style.backgroundImage = "url('http://127.0.0.1/devider.svg')"; // Todo(): host the image on a server
 selectionAreaOutlineDiv.style.backgroundPosition = "center";
 selectionAreaOutlineDiv.style.backgroundSize = "cover";
 document.body.appendChild(selectionAreaOutlineDiv);
@@ -38,13 +38,18 @@ updateSelectionAreaDiv();
 document.onkeydown = (event) => {
 
 	var evtobj = window.event? event : e    
+
+    console.log(evtobj.keyCode);
     
     // Extention only starts working when both ctrl and > keys are pressed down at the same time (but you can let go of ctrl after that)
     if(evtobj.keyCode == 17){// Ctrl key
         ctrlDown = true;
+        console.log("ctrl down");
     }
-    if(evtobj.keyCode == 60){// Grater than key >
+    if(evtobj.keyCode == 226){// Grater than key >
+        console.log("> down");
         if(ctrlDown){
+            console.log("both down");
 
             // Call it only once per press (onkeydown gets constantly called when key is pressed down)
             if(bothDown == false){
@@ -136,7 +141,7 @@ document.onkeyup = (event) => {
     if(evtobj.keyCode == 17){
         
     }
-    if(evtobj.keyCode == 60){
+    if(evtobj.keyCode == 226){
 
         ctrlDown = false;
         bothDown = false; // Put it in here because keyboard couldnt handle 3 keys down (but only with arrow down key idk why)
