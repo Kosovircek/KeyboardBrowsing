@@ -7,7 +7,7 @@
   "description": "Allows for keyboard only web browsing",
 
   "icons": {
-    "48": "icons/keyboard_browsing_icon.png.png"
+    "48": "icons/keyboard_browsing_icon.png"
   },
 
   "content_scripts": [
